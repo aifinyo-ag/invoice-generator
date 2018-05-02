@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  
+  <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
+  <title>Rechnungsvorfinanzierung und Factoring für Selbständige und Freiberufler</title>
+  <link type="text/css" rel="stylesheet" href="assets/style.css">
+  <!-- <link href="css/style.css" rel="stylesheet"> -->
+  <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet"> -->
+
+  <link href="images/favicon.ico" rel="icon" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/css?family=Playfair+Display" rel="stylesheet">
+  <script src="assets/jquery.min.js"></script>
+  <script type="text/javascript" src="assets/invoice_generator.js"></script>
+
+  <style>
+  @font-face {
+    font-family: 'Raleway';
+    font-style: normal;
+    font-weight: 300;
+    src: local('Raleway'), local('Raleway-thin'), url(https://fonts.googleapis.com/css?family=Raleway:300) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+  }
+  @font-face {
+    font-family: 'Raleway';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Raleway'), local('Raleway-Regular'), url(https://fonts.googleapis.com/css?family=Raleway) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+  }
+  @font-face {
+    font-family: 'Raleway';
+    font-style: normal;
+    font-weight: 700;
+    src: local('Raleway Bold'), local('Raleway-Bold'), url(https://fonts.googleapis.com/css?family=Raleway:700) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+  }
+  </style>
+
+</head>
+
+<body class="decimo-generator">
+    <div class="page">
+        <div class="sticky">
+            <div class="container">
+                <a href="./" class="sticky__logo"></a>
+            </div>
+        </div>
+        <section class="masthead is-animated">
+            <header class="header">
+                <div class="container">
+                    <a href="./" class="header__logo"></a>
+                </div>
+            </header>
+
+            <div class="masthead__content masthead__index">
+                <div class="container title-container">
+                    <h1>Show Case: Rechnungsgenerator</h1><br><br>
+                    <p> 
+                      <a class="btn btn-accent" href="mailto:mike.nagora@decimo.de" style="color:white"><b>Interesse</b></a>
+                    </p>
+                </div>    
+            </div>
+        </section>
+        <section class="page__generator">
+          <div class="container">
+            <div id="generator" class="generator-style">
+
+            </div>
+          </div>
+        </section>
+  
+        <script type="text/javascript">
+          $( document ).ready(function() {
+            options = {
+              container: "generator",
+              token: "",
+              source: "",
+              data: {  
+                 "user": {
+                  "token": ""
+                 },
+                 /*
+                 "from": {
+    
+                 }
+                 */
+                 form_data: {
+                  "from":{  
+                      "firstname":"Lili",
+                      "lastname": "Lane",
+                      "email": "launetagger@dec.de",
+                      "line1":"Surallee 42",
+                      "zip":"0815",
+                      "city":"Astau",
+                      "country":"DE",
+                      "phone":"01623344567",
+                      "tax_number":"133/8150/8159",
+                      "vat_number":"",
+                      "registry_number":""
+                  }
+                  "to":{  
+                      "firstname":"Max",
+                      "lastname": "Mustermannn",
+                      "line1":"Musterweg 42",
+                      "zip":"1723",
+                      "city":"Musterlitz",
+                      "country":"DE",
+                      "phone": "01623344567",
+                      "email": "bla@bla.de"
+                  }
+                }
+              }
+            }
+            InvoiceGenerator.init(options, function(message) {
+              alert(message);
+            }); 
+          });
+        </script>
+
+      </div>
+    </div>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="col-sm-9">
+          <div class="footer__title">decimo<span></span></div><br>
+          <p>decimo ist ein innovatives Unternehmen aus Berlin. Mit jahrelanger Erfahrung im Factoringgeschäft sind wir bestens aufgestellt, um dynamisch zu wachsen und unseren Kunden eine tolle Dienstleistung zu bieten.</p>
+        </div>
+        <div class="col-sm-3">
+          <div class="footer__title">Kontakt</div>
+          <p>decimo gmbh
+            <br>Saarbrücker Straße 38a
+            <br>10405 Berlin
+            <br>
+            <br>+49 30 220 121 010
+            <br>info@decimo.de
+          </p>
+        </div>
+      </div>
+      <div class="footer__sub">Copyright © 2012-2018 decimo gmbh</div>
+    </footer>
+  </body>
+</html>
+
+
