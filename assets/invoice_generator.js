@@ -17,7 +17,8 @@
       container: "",
       token: "",
       callback: {},
-      user_token: ""
+      user_token: "",
+      form: ""
     };
 
     var sender = null;
@@ -31,6 +32,7 @@
         settings.container = "#" + options.container;
         settings.callback = callback;
         settings.user_token = options.data.user.token
+        settings.form = settings.container + ' form.new_invoice'
 
         this.initEvents();
            
@@ -55,27 +57,37 @@
        var self = this;
 
         // initialize events
-        $(document).on('click', settings.container + ' .btn-invoice-save', function(e) {
-            e.preventDefault();
-            let form = $(this).parents('form');
-            self.submit(form.serialize());
-        });
-
-        $(document).on('click', settings.container + ' .invoice-pdf-download', function(e) {
-            let form = $(this).parents('form');
-            form.attr('action', host + '/api/v2/generator/download_pdf');
-            form.submit();
-        });
-
         $(document).on('click', settings.container + ' .send-to-button', function(e) {  
-            $('#email-modal').modal('show');
+            if (localStorage.getItem("email-modal-displayed") == "true") {
+              self.send_pdf($(settings.form).serialize());
+            } else {
+              $('#email-modal').modal('show');
+            }
         });
 
         $(document).on('click', settings.container + ' button.send-pdf', function(e) {  
             $('#email-modal').modal('hide');
-            let form = $(settings.container + ' form.new_invoice');
-            self.send_pdf(form.serialize());
-        });     
+            
+            // Save data to the current local store
+            localStorage.setItem("email-modal-displayed", $('#email-modal').find('#email-modal-displayed').is(':checked'));
+            
+            self.send_pdf($(settings.form).serialize());
+        });
+
+        $(document).on('click', settings.container + ' .btn-invoice-save', function(e) {  
+            e.preventDefault();
+
+            if (settings.user_token) {
+              self.submit($(settings.form).serialize());
+            } else {
+              $('#save-modal').modal('show');
+            }
+        });
+
+        $(document).on('click', settings.container + ' save-customer', function(e) {  
+            $('#save-modal').modal('hide');
+            self.submit($(settings.form).serialize());
+        });   
     };
 
     _invoiceGeneratorObject.initFields = function(data){
