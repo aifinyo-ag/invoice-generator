@@ -6,8 +6,6 @@
   <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'>
   <title>Rechnungsvorfinanzierung und Factoring für Selbständige und Freiberufler</title>
   <link type="text/css" rel="stylesheet" href="assets/style.css">
-  <!-- <link href="css/style.css" rel="stylesheet"> -->
-  <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet"> -->
 
   <link href="images/favicon.ico" rel="icon" type="image/x-icon">
   <link href="https://fonts.googleapis.com/css?family=Playfair+Display" rel="stylesheet">
@@ -99,7 +97,7 @@
                       "tax_number":"133/8150/8159",
                       "vat_number":"",
                       "registry_number":""
-                  }
+                  },
                   "to":{  
                       "firstname":"Max",
                       "lastname": "Mustermannn",
@@ -113,8 +111,8 @@
                 }
               }
             }
-            InvoiceGenerator.init(options, function(message) {
-              alert(message);
+            InvoiceGenerator.init(options, function(response) {
+              alert(response);
             }); 
           });
         </script>

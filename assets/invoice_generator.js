@@ -1,6 +1,6 @@
 /*!
  * decimo Invoice Generator
- * version: 0.1
+ * version: 0.2
  * Requires jQuery v1.11
  * Copyright (c) 2018 Mike Nagora (mike.nagora@decimo.de)
  */
@@ -55,6 +55,9 @@
 
     _invoiceGeneratorObject.initEvents = function(){
        var self = this;
+
+        // set body CSS class
+        $('body').addClass('decimo-generator');
 
         // initialize events
         $(document).on('click', settings.container + ' .send-to-button', function(e) {  
@@ -167,9 +170,9 @@
         method: "POST",
         data: data
     }).done(function(response){
-        settings.callback("Ihre Daten wurden gespeichert.");
+        settings.callback(response);
       }).fail(function(response) {
-        settings.callback("Oops, es ist leider eine Fehler aufgetreten.")
+        settings.callback(response.responseJSON)
       });
     };
 
@@ -182,9 +185,9 @@
         method: "POST",
         data: data
     }).done(function(response){
-        settings.callback('Ihre Email wurde erfolgreich versandt');
+        settings.callback(response);
       }).fail(function(response) {
-      settings.callback("Oops, es ist leider eine Fehler aufgetreten.");
+      settings.callback(response.responseJSON);
       });
     };
 
@@ -226,7 +229,7 @@
         }
       });
     }).fail(function(response) {
-      settings.callback("Oops, es ist leider eine Fehler aufgetreten.")
+      settings.callback(response.responseJSON)
     });
   }
 
