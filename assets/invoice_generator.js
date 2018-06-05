@@ -1,6 +1,6 @@
 /*!
  * decimo Invoice Generator
- * version: 0.2
+ * version: 0.1
  * Requires jQuery v1.11
  * Copyright (c) 2018 Mike Nagora (mike.nagora@decimo.de)
  */
@@ -37,20 +37,29 @@
         this.initEvents();
            
       $.getScript(host + "/api_packs/decimo.js", function() {
-      $.ajax({
-        url : host + "/api/v2/generator/invoice?pp=disable",
-        headers: {
-          'X-AUTH-TOKEN' : options.token
-        },
-        method: "POST",
-        dataType: "html",
-        data: options.data
-      }).done(function(response){
-        $(settings.container).html(response);
-        self.initFields(options.data.form_data);
-      });
-    });
-      
+        $.ajax({
+          url : host + "/api/v2/generator/invoice?pp=disable",
+          headers: {
+            'X-AUTH-TOKEN' : options.token
+          },
+          method: "POST",
+          dataType: "html",
+          data: options.data
+        }).done(function(response) {
+          $(settings.container).html(response);
+
+          if (options.data.form_data) {
+            self.initFields(options.data.form_data);
+          }
+
+          // initialize recipient addresses 
+          if (settings.user_token) {
+            getAddress(settings.token, settings.user_token);  
+          } 
+        }).fail(function(response) {
+          settings.callback(JSON.parse(response.responseText));
+        });
+      });  
     };
 
     _invoiceGeneratorObject.initEvents = function(){
@@ -58,6 +67,10 @@
 
         // set body CSS class
         $('body').addClass('decimo-generator');
+
+        if (settings.user_token) {
+          $('body').addClass('registered');
+        }
 
         // initialize events
         $(document).on('click', settings.container + ' .send-to-button', function(e) {  
@@ -87,7 +100,7 @@
             }
         });
 
-        $(document).on('click', settings.container + ' save-customer', function(e) {  
+        $(document).on('click', settings.container + ' .save-customer', function(e) {  
             $('#save-modal').modal('hide');
             self.submit($(settings.form).serialize());
         });   
@@ -115,26 +128,32 @@
           $('input[id="user[registry_number]"]').val(data.from.registry_number);
 
           $('#send-to-email').text(data.from.email);
-          $('#user-registration-email').text(data.from.email);
 
-          sender.find('.data-full-address').html(
-            '<p>' + data.from.firstname + ' ' + data.from.lastname + 
-            '<br>' + data.from.line1 + 
-            '<br>' + data.from.zip + ' ' + data.from.city + 
-            '<br>' + data.from.country + '</p>'
-          );
-          sender.find('.data-contact-info').html(
-            '<p>' + data.from.email + 
-            '<br>' + data.from.phone + '</p>'
-          );
+          setFullAddress(sender, data.from);
+          setContactInfo(sender, data.from);
+
           sender.find('.data-vat-number').text(data.from.vat_number);
           sender.find('.data-tax-number').text(data.from.tax_number);
           sender.find('.data-registry-number').text(data.from.registry_number);
+
+          //set data in modal
+          setFormField($('input[name="sender[first_name]"]'), data.from.firstname);
+          setFormField($('input[name="sender[last_name]"]'), data.from.lastname);
+          setFormField($('input[name="sender[email]"]'), data.from.email);
+          setFormField($('input[name="sender[line1]"]'), data.from.line1);
+          setFormField($('input[name="sender[zip]"]'), data.from.zip);
+          setFormField($('input[name="sender[city]"]'), data.from.city);
+          setFormField($('input[name="sender[country]"]'), data.from.country);
+          setFormField($('input[name="sender[phone]"]'), data.from.phone);
+          setFormField($('input[name="sender[vat_number]"]'), data.from.vat_number);
+          setFormField($('input[name="sender[tax_number]"]'), data.from.tax_number);
+          setFormField($('input[name="sender[registry_number]"]'), data.from.registry_number);
+          setFormField($('input[name="sender[email]"]'), data.from.email);
+          setFormField($('input[name="sender[phone]"]'), data.from.phone);
         }
 
         // initialize recipient address
         if (data.to) {
-
           $('input[id="recipient[name]"]').val(data.to.firstname + " " + data.to.lastname);
           $('input[id="recipient[email]"]').val(data.to.email);
           $('input[id="recipient[line1]"]').val(data.to.line1);
@@ -143,22 +162,8 @@
           $('input[id="recipient[country]"]').val(data.to.country);
           $('input[id="recipient[phone]"]').val(data.to.phone);
 
-          recipient.find('.data-full-address').html(
-            '<p>' + data.to.firstname + ' ' + data.to.lastname + 
-            '<br>' + data.to.line1 + 
-            '<br>' + data.to.zip + ' ' + data.to.city + 
-            '<br>' + data.to.country + '</p>'
-          );
-        }
-
-        // initialize recipient addresses 
-        if (settings.user_token) {
-          getAddress(settings.token, settings.user_token);  
-        } else {
-          item = $('.modal#contact-modal').find('.contact-item:first');
-          item.addClass("hidden");
-        }
-        
+          setFullAddress(recipient, data.to);
+        }        
     };
 
     _invoiceGeneratorObject.submit = function(data){
@@ -215,7 +220,8 @@
         item.find('.line1').text(value.line1);
         item.find('.zip').text(value.zip);
         item.find('.city').text(value.city);
-        item.find('.country').text(value.country);
+        item.find('.country').text(countryLabelLong(value.country));
+        item.find('.country_code').text(value.country);
 
         if (contacts_count == 0) {
           item.addClass("hidden")
@@ -231,6 +237,37 @@
     }).fail(function(response) {
       settings.callback(response.responseJSON)
     });
+  }
+
+  function setFormField(field, value) {
+    if (value && value != "") {
+      field.val(value);
+      field.parents('.form-group').removeClass('is-empty');
+    }
+  }
+
+  function setFullAddress(object, data) {
+    object.find('.data-full-address').html(
+      '<p>' + data.firstname + ' ' + data.lastname + 
+      '<br>' + data.line1 + 
+      '<br>' + data.zip + ' ' + data.city + 
+      '<br>' + countryLabelLong(data.country) + '</p>'
+    );
+  }
+
+  function setContactInfo(object, data) {
+    object.find('.data-contact-info').html(
+      '<p>' + data.email + 
+      '<br>' + data.phone + '</p>'
+    );
+  }
+
+  function countryLabelLong(country) {
+    switch(country) {
+      case 'DE': return 'Deutschland'; break;
+      case 'CH': return 'Schweiz'; break;
+      case 'AT': return 'Österreich'; break;
+    }
   }
 
   // We need that our library is globally accesible, then we save in the window
