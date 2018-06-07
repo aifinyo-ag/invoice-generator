@@ -31,7 +31,7 @@
         settings.token = options.token;
         settings.container = "#" + options.container;
         settings.callback = callback;
-        settings.user_token = options.data.user.token
+        settings.user_token = (options.data && options.data.user) ? options.data.user.token : ""
         settings.form = settings.container + ' form.new_invoice'
 
         this.initEvents();
@@ -48,7 +48,7 @@
         }).done(function(response) {
           $(settings.container).html(response);
 
-          if (options.data.form_data) {
+          if (options.data && options.data.form_data) {
             self.initFields(options.data.form_data);
           }
 
@@ -56,6 +56,12 @@
           if (settings.user_token) {
             getAddress(settings.token, settings.user_token);  
           } 
+
+          $('input[name="sender[email]"]').change(function() {
+            $('#send-to-email').text($(this).val());
+            $('#user-registration-email').text($(this).val());
+          });
+
         }).fail(function(response) {
           settings.callback(JSON.parse(response.responseText));
         });
@@ -128,6 +134,7 @@
           $('input[id="user[registry_number]"]').val(data.from.registry_number);
 
           $('#send-to-email').text(data.from.email);
+          $('#user-registration-email').text(data.from.email);
 
           setFullAddress(sender, data.from);
           setContactInfo(sender, data.from);
