@@ -62,11 +62,27 @@
             </div>
         </section>
         <section class="page__generator">
-          <div class="container">
-            <div id="generator" class="generator-style">
-
+            <div class="loader hidden"></div>
+            <div id="generator" class="container generator-style dark">
             </div>
-          </div>
+            <div class="modal fade" id="success-modal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">Vielen Dank für Ihre Nutzung</div>
+                        <div class="modal-body"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="error-modal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">Oops, leider ist hier was nicht korrekt</div>
+                        <div class="modal-body">
+                            <ul></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
   
         <script type="text/javascript">
@@ -112,7 +128,20 @@
               }
             }
             InvoiceGenerator.init(options, function(response) {
-              alert(response.status);
+              if (response.status == "error") {
+                  $('#error-modal ul').text("");
+
+                  errors = Object.values(JSON.parse(response.message));
+                  if (errors.length > 0) {
+                      errors.forEach(function(error) {
+                          $('#error-modal ul').append("<li>" + error + "</li>");
+                      });
+                  }
+                  $('#error-modal').modal('show');
+              } else {
+                  $('#success-modal .modal-body').text(response.message);
+                  $('#success-modal').modal('show');
+              }
             }); 
           });
         </script>

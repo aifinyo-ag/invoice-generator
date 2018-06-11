@@ -1,12 +1,12 @@
 /*!
  * decimo Invoice Generator
- * version: 0.1
+ * version: 0.3
  * Requires jQuery v1.11
  * Copyright (c) 2018 Mike Nagora (mike.nagora@decimo.de)
  */
 
 (function(window){
-  var host = "http://dev-api.decimo.de";
+  var host = "https://dev-api.decimo.de";
 
   // This function will contain all our code
   function InvoiceGenerator(){
@@ -217,7 +217,7 @@
         user_token: user_id
       }
     }).done(function(response){
-      let contacts_count = response.contacts.length
+      var contacts_count = response.contacts.length
       $.each(response.contacts, function(index, value) {
         item = $('.modal#contact-modal').find('.contact-item:first');
         row = item.parents('.row');
