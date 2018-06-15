@@ -65,18 +65,48 @@
             <div class="loader hidden"></div>
             <div id="generator" class="container generator-style dark">
             </div>
-            <div class="modal fade" id="success-modal">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">Vielen Dank für Ihre Nutzung</div>
-                        <div class="modal-body"></div>
+            <div id="success-message-content" class="hidden container">
+                <div class="col-sm-12">
+                   <div class="title">
+                        Vielen Dank für die Nutzung unseres Rechnungsgenerators.
+                    </div>
+                    <div class="message">
+
+                    </div>
+                    <div class="content save-invoice-success hidden">
+                        <p>
+                            Sie sollten nun in einer Email eine Anleitung zur Aktivierung Ihres decimo Accounts bekommen haben. Nachdem Sie Ihren Account aktiviert haben, können Sie in unserem Portal Ihre Entwürfe einsehen und bearbeiten.
+                        </p>
+                        <p>
+                            Zusätzlich sollten Sie in einer anderen Email Ihren Rechnungsentwurf zugeschickt bekommen haben.
+                        </p>
+                        <p>
+                            Haben Sie Fragen, so melden Sie sich bitte an info@decimo.de oder +49 30 220 121 010. <br> Wir melden uns dann bei Ihen.
+                        </p>
+                    </div>
+                    <div class="content send-pdf-success hidden">
+                        <p>
+                            Sie sollten nun eine Email mit Ihrem Rechnungsentwurf im Anhang erhalten. 
+                        </p>
+                        <p>
+                            Haben Sie Fragen, so melden Sie sich bitte an info@decimo.de oder +49 30 220 121 010. <br> Wir melden uns dann bei Ihnen.
+                        </p>
+                    </div>
+                    
+                    <div class="new">
+                        <button type="button" id="new-invoice" class="btn btn-accent">Gerne können Sie auch eine neue Rechnung erstellen</button>
                     </div>
                 </div>
             </div>
             <div class="modal fade" id="error-modal">
                 <div class="modal-dialog">
                     <div class="modal-content">
-                        <div class="modal-header">Oops, leider ist hier was nicht korrekt</div>
+                        <div class="modal-header">
+                            <div class="modal-title">
+                                <i class="close material-icons" data-dismiss="modal">close</i>            
+                                Oops, leider ist hier was nicht korrekt
+                            </div>
+                        </div>
                         <div class="modal-body">
                             <ul></ul>
                         </div>
@@ -87,6 +117,15 @@
   
         <script type="text/javascript">
           $( document ).ready(function() {
+
+            $(document).ajaxStart(function(){
+                $(".loader").toggleClass("hidden");
+            });
+
+            $(document).ajaxComplete(function(){
+                $(".loader").toggleClass("hidden");
+            });
+
             options = {
               container: "generator",
               token: "",
@@ -128,22 +167,45 @@
               }
             }
             InvoiceGenerator.init(options, function(response) {
-              if (response.status == "error") {
-                  $('#error-modal ul').text("");
-
-                  errors = Object.values(JSON.parse(response.message));
-                  if (errors.length > 0) {
-                      errors.forEach(function(error) {
-                          $('#error-modal ul').append("<li>" + error + "</li>");
-                      });
-                  }
-                  $('#error-modal').modal('show');
-              } else {
-                  $('#success-modal .modal-body').text(response.message);
-                  $('#success-modal').modal('show');
-              }
+              handleResponse(response); 
             }); 
+
+            $('#new-invoice').on('click', function() {
+                $('#success-message-content').addClass('hidden');
+                $('.save-invoice-success').toggleClass('hidden', true);
+                $('.send-pdf-success').toggleClass("hidden", true);
+                $('#success-message-content .message').text("");
+
+                InvoiceGenerator.init(options, function(response) {
+                   handleResponse(response); 
+                }); 
+            });
           });
+
+          function handleResponse(response) {
+            if (response.status == "error") {
+                $('#error-modal ul').text("");
+
+                errors = Object.values(JSON.parse(response.message));
+                if (errors.length > 0) {
+                    errors.forEach(function(error) {
+                        $('#error-modal ul').append("<li>" + error + "</li>");
+                    });
+                }
+                $('#error-modal').modal('show');
+            } else {
+                $('#success-message-content .message').text(response.message);
+                
+                if (response.type == 'save-invoice') {
+                    $('.save-invoice-success').removeClass("hidden");
+                } else {
+                    $('.send-pdf-success').removeClass("hidden");
+                }
+
+                $('#generator').html("");
+                $('#success-message-content').removeClass('hidden');
+            }
+          }
         </script>
 
       </div>

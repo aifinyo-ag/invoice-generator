@@ -34,38 +34,40 @@
         settings.user_token = (options.data && options.data.user) ? options.data.user.token : ""
         settings.form = settings.container + ' form.new_invoice'
 
-        this.initEvents();
-           
-      $.getScript(host + "/api_packs/decimo.js", function() {
-        $.ajax({
-          url : host + "/api/v2/generator/invoice?pp=disable",
-          headers: {
-            'X-AUTH-TOKEN' : options.token
-          },
-          method: "POST",
-          dataType: "html",
-          data: options.data
-        }).done(function(response) {
-          $(settings.container).html(response);
-
-          if (options.data && options.data.form_data) {
-            self.initFields(options.data.form_data);
-          }
-
-          // initialize recipient addresses 
-          if (settings.user_token) {
-            getAddress(settings.token, settings.user_token);  
-          } 
-
-          $('input[name="sender[email]"]').change(function() {
-            $('#send-to-email').text($(this).val());
-            $('#user-registration-email').text($(this).val());
-          });
-
-        }).fail(function(response) {
-          settings.callback(JSON.parse(response.responseText));
+        $.getScript("https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js", function() {
+          self.initEvents();  
         });
-      });  
+
+        $.getScript(host + "/api_packs/decimo.js", function() {
+          $.ajax({
+            url : host + "/api/v2/generator/invoice?pp=disable",
+            headers: {
+              'X-AUTH-TOKEN' : options.token
+            },
+            method: "POST",
+            dataType: "html",
+            data: options.data
+          }).done(function(response) {
+            $(settings.container).html(response);
+
+            if (options.data && options.data.form_data) {
+              self.initFields(options.data.form_data);
+            }
+
+            // initialize recipient addresses 
+            if (settings.user_token) {
+              getAddress(settings.token, settings.user_token);  
+            } 
+
+            $('input[name="sender[email]"]').change(function() {
+              $('#send-to-email').text($(this).val());
+              $('#user-registration-email').text($(this).val());
+            });
+
+          }).fail(function(response) {
+            settings.callback(JSON.parse(response.responseText));
+          });
+        });  
     };
 
     _invoiceGeneratorObject.initEvents = function(){
