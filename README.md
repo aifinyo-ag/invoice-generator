@@ -6,12 +6,10 @@ External invoice generator
 
 ```
 <script type="text/javascript" src="assets/invoice_generator.js"></script>
-<body class=“decimo-generator”>
-<div id=“generator” class=“generator-style”>
+<div id=“generator” class=“generator-style-dark”>
 ```
 
-* Das Body Element muss die CSS Klasse “decimo-generator” enthalten.
-* Am Generator Container muss die CSS Klasse “generator-style” gesetzt sein.
+* Am Generator Container muss die CSS Klasse “generator-style-light” oder “generator-style-dark” gesetzt sein.
 * invoice_generator.js Script muss eingebunden werden.
 
 ## Javascript
