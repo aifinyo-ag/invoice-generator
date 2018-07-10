@@ -18,7 +18,8 @@
       token: "",
       callback: {},
       user_token: "",
-      form: ""
+      form: "",
+      user_external_id: ""
     };
 
     var sender = null;
@@ -32,6 +33,7 @@
         settings.container = "#" + options.container;
         settings.callback = callback;
         settings.user_token = (options.data && options.data.user) ? options.data.user.token : ""
+        settings.user_external_id = (options.data && options.data.user) ? options.data.user.external_id : ""
         settings.form = settings.container + ' form.new_invoice'
 
         $.getScript("https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js", function() {
@@ -58,6 +60,11 @@
             if (settings.user_token) {
               getAddress(settings.token, settings.user_token);  
             } 
+
+            // set external user id
+            if (settings.user_external_id) {
+              $('input[id="user[external_id]"]').val(settings.user_external_id);
+            }
 
             $('input[name="sender[email]"]').change(function() {
               $('#send-to-email').text($(this).val());
