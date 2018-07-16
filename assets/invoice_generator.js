@@ -1,6 +1,6 @@
 /*!
  * decimo Invoice Generator
- * version: 0.3
+ * version: 0.4
  * Requires jQuery v1.11
  * Copyright (c) 2018 Mike Nagora (mike.nagora@decimo.de)
  */
@@ -52,13 +52,36 @@
           }).done(function(response) {
             $(settings.container).html(response);
 
-            if (options.data && options.data.form_data) {
+            // initialize forms for passed customer data
+            if (options.data && options.data.form_data && !settings.user_token) {
               self.initFields(options.data.form_data);
             }
 
-            // initialize recipient addresses 
+            // initialize recipient addresses and forms for registered customers 
             if (settings.user_token) {
               getAddress(settings.token, settings.user_token);  
+
+              data = {
+                from: {
+                  "firstname": $('input[id="user[first_name]"]').val(),
+                  "lastname": $('input[id="user[last_name]"]').val(),
+                  "name": $('input[id="user[name]"]').val(),
+                  "company": $('input[id="user[company]"]').val(),
+                  "email": $('input[id="user[email]"]').val(),
+                  "line1": $('input[id="user[line1]"]').val(),
+                  "zip": $('input[id="user[zip]"]').val(),
+                  "city": $('input[id="user[city]"]').val(),
+                  "country": $('input[id="user[country]"]').val(),
+                  "phone": $('input[id="user[phone]"]').val(),
+                  "tax_number_natural": $('input[id="user[tax_number_natural]"]').val(),
+                  "tax_number_legal": $('input[id="user[tax_number_legal]"]').val(),
+                  "vat_number": $('input[id="user[vat_number]"]').val(),
+                  "registry_number": $('input[id="user[registry_number]"]').val(),
+                  "legal_form": $('input[id="user[legal_form]"]').val()
+                }
+              }
+
+              self.initFields(data);
             } 
 
             // set external user id
@@ -132,15 +155,17 @@
         if (data.from) {
 
           $('input[id="user[name]"]').val(data.from.firstname + " " + data.from.lastname);
+          $('input[id="user[company]"]').val(data.from.company);
           $('input[id="user[email]"]').val(data.from.email);
           $('input[id="user[line1]"]').val(data.from.line1);
           $('input[id="user[zip]"]').val(data.from.zip);
           $('input[id="user[city]"]').val(data.from.city);
           $('input[id="user[country]"]').val(data.from.country);
           $('input[id="user[phone]"]').val(data.from.phone);
-          $('input[id="user[vat_number]"]').val(data.from.vat_number);
-          $('input[id="user[tax_number]"]').val(data.from.tax_number);
+          $('input[id="user[vat_number_natural]"]').val(data.from.vat_number_natural);
+          $('input[id="user[tax_number_legal]"]').val(data.from.tax_number_legal);
           $('input[id="user[registry_number]"]').val(data.from.registry_number);
+          $('input[id="user[legal_form]"]').val(data.from.legal_form);
 
           $('#send-to-email').text(data.from.email);
           $('#user-registration-email').text(data.from.email);
@@ -155,6 +180,7 @@
           //set data in modal
           setFormField($('input[name="sender[first_name]"]'), data.from.firstname);
           setFormField($('input[name="sender[last_name]"]'), data.from.lastname);
+          setFormField($('input[name="sender[company]"]'), data.from.company);
           setFormField($('input[name="sender[email]"]'), data.from.email);
           setFormField($('input[name="sender[line1]"]'), data.from.line1);
           setFormField($('input[name="sender[zip]"]'), data.from.zip);
@@ -162,8 +188,10 @@
           setFormField($('input[name="sender[country]"]'), data.from.country);
           setFormField($('input[name="sender[phone]"]'), data.from.phone);
           setFormField($('input[name="sender[vat_number]"]'), data.from.vat_number);
-          setFormField($('input[name="sender[tax_number]"]'), data.from.tax_number);
+          setFormField($('input[name="sender[tax_number_natural]"]'), data.from.tax_number_natural);
+          setFormField($('input[name="sender[tax_number_legal]"]'), data.from.tax_number_legal);
           setFormField($('input[name="sender[registry_number]"]'), data.from.registry_number);
+          setFormField($('input[name="legal_form"]'), data.from.legal_form);
           setFormField($('input[name="sender[email]"]'), data.from.email);
           setFormField($('input[name="sender[phone]"]'), data.from.phone);
         }
