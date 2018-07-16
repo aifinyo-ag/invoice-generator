@@ -6,10 +6,10 @@ External invoice generator
 
 ```
 <script type="text/javascript" src="assets/invoice_generator.js"></script>
-<div id=“generator” class=“generator-style-dark”>
+<div id=“generator” class=“generator-style dark”>
 ```
 
-* Am Generator Container muss die CSS Klasse “generator-style-light” oder “generator-style-dark” gesetzt sein.
+* Am Generator Container muss die CSS Klasse “generator-style" mit dem Farbschema "light” oder “dark” gesetzt sein.
 * invoice_generator.js Script muss eingebunden werden.
 
 ## Javascript
