@@ -1,12 +1,12 @@
 /*!
  * decimo Invoice Generator
- * version: 0.4
+ * version: 0.5
  * Requires jQuery v1.11
  * Copyright (c) 2018 Mike Nagora (mike.nagora@decimo.de)
  */
 
 (function(window){
-  var host = "https://dev-api.decimo.de";
+  var host = "https://development.decimo.de";
 
   // This function will contain all our code
   function InvoiceGenerator(){
@@ -162,20 +162,21 @@
           $('input[id="user[city]"]').val(data.from.city);
           $('input[id="user[country]"]').val(data.from.country);
           $('input[id="user[phone]"]').val(data.from.phone);
-          $('input[id="user[vat_number_natural]"]').val(data.from.vat_number_natural);
+          $('input[id="user[vat_number]"]').val(data.from.vat_number);
           $('input[id="user[tax_number_legal]"]').val(data.from.tax_number_legal);
+          $('input[id="user[tax_number_natural]"]').val(data.from.tax_number_natural);
           $('input[id="user[registry_number]"]').val(data.from.registry_number);
           $('input[id="user[legal_form]"]').val(data.from.legal_form);
 
-          $('#send-to-email').text(data.from.email);
-          $('#user-registration-email').text(data.from.email);
+          $('#send-to-email').text(setBlankForUndefined(data.from.email));
+          $('#user-registration-email').text(setBlankForUndefined(data.from.email));
 
           setFullAddress(sender, data.from);
           setContactInfo(sender, data.from);
 
-          sender.find('.data-vat-number').text(data.from.vat_number);
-          sender.find('.data-tax-number').text(data.from.tax_number);
-          sender.find('.data-registry-number').text(data.from.registry_number);
+          sender.find('.data-vat-number').text(setBlankForUndefined(data.from.vat_number));
+          sender.find('.data-tax-number').text(setBlankForUndefined(data.from.tax_number));
+          sender.find('.data-registry-number').text(setBlankForUndefined(data.from.registry_number));
 
           //set data in modal
           setFormField($('input[name="sender[first_name]"]'), data.from.firstname);
@@ -284,7 +285,7 @@
   }
 
   function setFormField(field, value) {
-    if (value && value != "") {
+    if (value && value != "" && typeof(value) !== "undefined") {
       field.val(value);
       field.parents('.form-group').removeClass('is-empty');
     }
@@ -292,17 +293,17 @@
 
   function setFullAddress(object, data) {
     object.find('.data-full-address').html(
-      '<p>' + data.firstname + ' ' + data.lastname + 
-      '<br>' + data.line1 + 
-      '<br>' + data.zip + ' ' + data.city + 
-      '<br>' + countryLabelLong(data.country) + '</p>'
+      '<p>' + setBlankForUndefined(data.firstname) + ' ' + setBlankForUndefined(data.lastname) + 
+      '<br>' + setBlankForUndefined(data.line1) + 
+      '<br>' + setBlankForUndefined(data.zip) + ' ' + setBlankForUndefined(data.city) + 
+      '<br>' + countryLabelLong(setBlankForUndefined(data.country)) + '</p>'
     );
   }
 
   function setContactInfo(object, data) {
     object.find('.data-contact-info').html(
-      '<p>' + data.email + 
-      '<br>' + data.phone + '</p>'
+      '<p>' + setBlankForUndefined(data.email) + 
+      '<br>' + setBlankForUndefined(data.phone) + '</p>'
     );
   }
 
@@ -311,7 +312,16 @@
       case 'DE': return 'Deutschland'; break;
       case 'CH': return 'Schweiz'; break;
       case 'AT': return 'Österreich'; break;
+      case '' :  return ''; break;
     }
+  }
+
+  function setBlankForUndefined(attribute) {
+    if (!attribute || typeof(attribute) == "undefined") {
+      attribute = "";
+    } 
+
+    return attribute;
   }
 
   // We need that our library is globally accesible, then we save in the window
