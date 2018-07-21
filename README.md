@@ -1,17 +1,18 @@
 
 # invoice-generator
-External invoice generator
+Der Rechnungsgenerator für jede Plattform
 
 
 ## Getting Started
 
-Eine beispielhafte Einbettung des Rechnungsgenerators findet man in der [index.html](/blob/master/index.html). Im Nachgang werden nun die wichtigstens Integrationspunkte aufgeführt und erläutert.
+Eine beispielhafte Einbettung des Rechnungsgenerators findet man in der [index.html](/index.html). Im Nachgang werden nun die wichtigstens Integrationspunkte aufgeführt und erläutert.
 
-* Das Script [invoice_generator.js](/blob/master/assets/invoice_generator.js) muss eingebunden werden.
+* Das Script [invoice_generator.js](/assets/invoice_generator.js) muss eingebunden werden.
 * Es muss ein Container DOM Element geben, in welchem der Rechnungsgenerator geladen wird. An diesem DOM Element muss die CSS Klasse “generator-style" mit dem Farbschema "light” oder “dark” gesetzt sein.
 * Der Rechnungsgenerator muss initialisiert werden. Dies geschieht in einem JavaScript Block auf der Seite. Dafür legt man vorher ein Options Objekt an, welche alle initialen Werte sowie die Einstellungen des Generators enthalten.
 
 **Options**
+
 |Name| Wert | Erklärung|
 |--|--|--|
 |container| \<container-id\>| Im folgenden Beispiel: generator |
@@ -40,7 +41,6 @@ Eine beispielhafte Einbettung des Rechnungsgenerators findet man in der [index.h
 |registry_number| *Registernummer*
 |legal_form| 2: *Freelancer*; 3: *Einzelunternehmen/Selbstständig*; 11: *OG / KG / GbR*; 21: *GmbH*; 22: *UG*; 23: *AG*; 31: *Eingetragener Verein*; 41: *Öffentliches Recht* 
 
-*Wenn Sie das Formular und den Generator mit Daten vorbelegen wollen, so achten Sie darauf, dass sie nicht übergebene Werte mit "" befüllen. Beispiel: tax_number_natural: ""*
 
 In einem Beispiel sieht eine Konfiguration wie folgt aus:
 ```
