@@ -1,6 +1,6 @@
 /*!
  * decimo Invoice Generator
- * version: 0.5
+ * version: 0.6
  * Requires jQuery v1.11
  * Copyright (c) 2018 Mike Nagora (mike.nagora@decimo.de)
  */
@@ -35,12 +35,16 @@
         settings.user_token = (options.data && options.data.user) ? options.data.user.token : ""
         settings.user_external_id = (options.data && options.data.user) ? options.data.user.external_id : ""
         settings.form = settings.container + ' form.new_invoice'
+        settings.source = options.source
 
         $.getScript("https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js", function() {
           self.initEvents();  
         });
 
         $.getScript(host + "/api_packs/decimo.js", function() {
+          data = options.data
+          data["source"] = settings.source
+
           $.ajax({
             url : host + "/api/v2/generator/invoice?pp=disable",
             headers: {
@@ -48,7 +52,7 @@
             },
             method: "POST",
             dataType: "html",
-            data: options.data
+            data: data
           }).done(function(response) {
             $(settings.container).html(response);
 
@@ -59,7 +63,7 @@
 
             // initialize recipient addresses and forms for registered customers 
             if (settings.user_token) {
-              getAddress(settings.token, settings.user_token);  
+              getAddress(settings.token, settings.user_token); 
 
               data = {
                 from: {
@@ -77,13 +81,14 @@
                   "tax_number_legal": $('input[id="user[tax_number_legal]"]').val(),
                   "vat_number": $('input[id="user[vat_number]"]').val(),
                   "registry_number": $('input[id="user[registry_number]"]').val(),
-                  "legal_form": $('input[id="user[legal_form]"]').val()
+                  "legal_form": $('input[id="user[legal_form]"]').val(),
+                  "date_of_birth": $('input[id="user[date_of_birth]"]').val()
                 }
               }
 
-              self.initFields(data);
+              self.initFields(data);  
             } 
-
+            
             // set external user id
             if (settings.user_external_id) {
               $('input[id="user[external_id]"]').val(settings.user_external_id);
@@ -195,6 +200,7 @@
           setFormField($('input[name="legal_form"]'), data.from.legal_form);
           setFormField($('input[name="sender[email]"]'), data.from.email);
           setFormField($('input[name="sender[phone]"]'), data.from.phone);
+          setFormField($('input[name="sender[date_of_birth]"]'), data.from.date_of_birth);
         }
 
         // initialize recipient address
