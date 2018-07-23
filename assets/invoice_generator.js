@@ -1,6 +1,6 @@
 /*!
  * decimo Invoice Generator
- * version: 0.6
+ * version: 0.5
  * Requires jQuery v1.11
  * Copyright (c) 2018 Mike Nagora (mike.nagora@decimo.de)
  */
