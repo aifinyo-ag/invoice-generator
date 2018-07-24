@@ -1,12 +1,13 @@
 /*!
  * decimo Invoice Generator
- * version: 0.5
+ * version: 0.6
  * Requires jQuery v1.11
  * Copyright (c) 2018 Mike Nagora (mike.nagora@decimo.de)
  */
 
 (function(window){
-  var host = "https://development.decimo.de";
+  var host_production = "https://my.decimo.de";
+  var host_development = "https://development.decimo.de";
 
   // This function will contain all our code
   function InvoiceGenerator(){
@@ -19,7 +20,8 @@
       callback: {},
       user_token: "",
       form: "",
-      user_external_id: ""
+      user_external_id: "",
+      host: host_development
     };
 
     var sender = null;
@@ -32,21 +34,25 @@
         settings.token = options.token;
         settings.container = "#" + options.container;
         settings.callback = callback;
-        settings.user_token = (options.data && options.data.user) ? options.data.user.token : ""
-        settings.user_external_id = (options.data && options.data.user) ? options.data.user.external_id : ""
-        settings.form = settings.container + ' form.new_invoice'
-        settings.source = options.source
+        settings.user_token = (options.data && options.data.user) ? options.data.user.token : "";
+        settings.user_external_id = (options.data && options.data.user) ? options.data.user.external_id : "";
+        settings.form = settings.container + ' form.new_invoice';
+        settings.source = options.source;
+        
+        if (options.env == "prod") {
+          settings.host = host_production
+        }
 
         $.getScript("https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js", function() {
           self.initEvents();  
         });
 
-        $.getScript(host + "/api_packs/decimo.js", function() {
+        $.getScript(settings.host + "/api_packs/decimo.js", function() {
           data = options.data
           data["source"] = settings.source
 
           $.ajax({
-            url : host + "/api/v2/generator/invoice?pp=disable",
+            url : settings.host + "/api/v2/generator/invoice?pp=disable",
             headers: {
               'X-AUTH-TOKEN' : options.token
             },
@@ -219,7 +225,7 @@
 
     _invoiceGeneratorObject.submit = function(data){
     $.ajax({
-      url : host + "/api/v2/generator/submit",
+      url : settings.host + "/api/v2/generator/submit",
         headers: {
             'X-AUTH-TOKEN' : settings.token
         },
@@ -234,7 +240,7 @@
 
     _invoiceGeneratorObject.send_pdf = function(data){
     $.ajax({
-      url : host + "/api/v2/generator/send_pdf",
+      url : settings.host + "/api/v2/generator/send_pdf",
         headers: {
             'X-AUTH-TOKEN' : settings.token
         },
@@ -252,7 +258,7 @@
 
   function getAddress(token, user_id) {
     $.ajax({
-      url : host + "/api/v2/generator/recipient",
+      url : settings.host + "/api/v2/generator/recipient",
       headers: {
           'X-AUTH-TOKEN' : token
       },
