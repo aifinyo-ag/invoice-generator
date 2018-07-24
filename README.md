@@ -18,6 +18,7 @@ Eine beispielhafte Einbettung des Rechnungsgenerators findet man in der [index.h
 |container| \<container-id\>| Im folgenden Beispiel: generator |
 |token | \<Auth Token\> | Wird von decimo bereitgestellt |
 |source| "decimo"| Bspw. Ihr Firmenname |
+|env| "prod"| Entweder "prod" oder "dev" - Standard ist "dev" |
 |data.user.token| \<decimo User ID Token\>| Gültiger decimo User ID Token zur Vorinitialisierung des Formulars. Der Wert wird nach Speicherung des Kunden auf Seiten decimos im Request zurückgegeben. |
 |data.form_data| {from: {Kundenattribute}, to: {Kundenattribute}}| Initialisierung des Formular nach dem Laden des Generators - Daten werden nicht an decimo übergeben|
 |data.from, data.to| {Kundenattribute}| Initialisierung des Formular vor dem Laden des Generators - Daten werden an decimo übergeben|
