@@ -1,6 +1,6 @@
 /*!
  * decimo Invoice Generator
- * version: 0.6
+ * version: 0.7
  * Requires jQuery v1.11
  * Copyright (c) 2018 Mike Nagora (mike.nagora@decimo.de)
  */
@@ -43,7 +43,7 @@
         if (options.env == "prod") {
           settings.host = host_production
         }
-        
+
         if (options.preload  == "false") {
           settings.preload = false
         }
@@ -63,6 +63,7 @@
     };
 
     _invoiceGeneratorObject.initGenerator = function(options){
+      var self = this;
       data = options.data
       data["source"] = settings.source
 
