@@ -21,7 +21,8 @@
       user_token: "",
       form: "",
       user_external_id: "",
-      host: host_development
+      host: host_development,
+      preload: true
     };
 
     var sender = null;
@@ -42,74 +43,87 @@
         if (options.env == "prod") {
           settings.host = host_production
         }
+        
+        if (options.preload  == "false") {
+          settings.preload = false
+        }
 
         $.getScript("https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js", function() {
           self.initEvents();  
         });
 
-        $.getScript(settings.host + "/api_packs/decimo.js", function() {
-          data = options.data
-          data["source"] = settings.source
-
-          $.ajax({
-            url : settings.host + "/api/v2/generator/invoice?pp=disable",
-            headers: {
-              'X-AUTH-TOKEN' : options.token
-            },
-            method: "POST",
-            dataType: "html",
-            data: data
-          }).done(function(response) {
-            $(settings.container).html(response);
-
-            // initialize forms for passed customer data
-            if (options.data && options.data.form_data && !settings.user_token) {
-              self.initFields(options.data.form_data);
-            }
-
-            // initialize recipient addresses and forms for registered customers 
-            if (settings.user_token) {
-              getAddress(settings.token, settings.user_token); 
-
-              data = {
-                from: {
-                  "firstname": $('input[id="user[first_name]"]').val(),
-                  "lastname": $('input[id="user[last_name]"]').val(),
-                  "name": $('input[id="user[name]"]').val(),
-                  "company": $('input[id="user[company]"]').val(),
-                  "email": $('input[id="user[email]"]').val(),
-                  "line1": $('input[id="user[line1]"]').val(),
-                  "zip": $('input[id="user[zip]"]').val(),
-                  "city": $('input[id="user[city]"]').val(),
-                  "country": $('input[id="user[country]"]').val(),
-                  "phone": $('input[id="user[phone]"]').val(),
-                  "tax_number_natural": $('input[id="user[tax_number_natural]"]').val(),
-                  "tax_number_legal": $('input[id="user[tax_number_legal]"]').val(),
-                  "vat_number": $('input[id="user[vat_number]"]').val(),
-                  "registry_number": $('input[id="user[registry_number]"]').val(),
-                  "legal_form": $('input[id="user[legal_form]"]').val(),
-                  "date_of_birth": $('input[id="user[date_of_birth]"]').val()
-                }
-              }
-
-              self.initFields(data);  
-            } 
-            
-            // set external user id
-            if (settings.user_external_id) {
-              $('input[id="user[external_id]"]').val(settings.user_external_id);
-            }
-
-            $('input[name="sender[email]"]').change(function() {
-              $('#send-to-email').text($(this).val());
-              $('#user-registration-email').text($(this).val());
-            });
-
-          }).fail(function(response) {
-            settings.callback(JSON.parse(response.responseText));
-          });
-        });  
+        if (settings.preload) {
+          $.getScript(settings.host + "/api_packs/decimo.js", function() {
+            self.initGenerator(options);
+          });  
+        } else {
+          self.initGenerator(options);
+        }
+          
     };
+
+    _invoiceGeneratorObject.initGenerator = function(options){
+      data = options.data
+      data["source"] = settings.source
+
+      $.ajax({
+        url : settings.host + "/api/v2/generator/invoice?pp=disable",
+        headers: {
+          'X-AUTH-TOKEN' : options.token
+        },
+        method: "POST",
+        dataType: "html",
+        data: data
+      }).done(function(response) {
+        $(settings.container).html(response);
+
+        // initialize forms for passed customer data
+        if (options.data && options.data.form_data && !settings.user_token) {
+          self.initFields(options.data.form_data);
+        }
+
+        // initialize recipient addresses and forms for registered customers 
+        if (settings.user_token) {
+          self.getAddress(settings.token, settings.user_token); 
+
+          data = {
+            from: {
+              "firstname": $('input[id="user[first_name]"]').val(),
+              "lastname": $('input[id="user[last_name]"]').val(),
+              "name": $('input[id="user[name]"]').val(),
+              "company": $('input[id="user[company]"]').val(),
+              "email": $('input[id="user[email]"]').val(),
+              "line1": $('input[id="user[line1]"]').val(),
+              "zip": $('input[id="user[zip]"]').val(),
+              "city": $('input[id="user[city]"]').val(),
+              "country": $('input[id="user[country]"]').val(),
+              "phone": $('input[id="user[phone]"]').val(),
+              "tax_number_natural": $('input[id="user[tax_number_natural]"]').val(),
+              "tax_number_legal": $('input[id="user[tax_number_legal]"]').val(),
+              "vat_number": $('input[id="user[vat_number]"]').val(),
+              "registry_number": $('input[id="user[registry_number]"]').val(),
+              "legal_form": $('input[id="user[legal_form]"]').val(),
+              "date_of_birth": $('input[id="user[date_of_birth]"]').val()
+            }
+          }
+
+          self.initFields(data);  
+        } 
+        
+        // set external user id
+        if (settings.user_external_id) {
+          $('input[id="user[external_id]"]').val(settings.user_external_id);
+        }
+
+        $('input[name="sender[email]"]').change(function() {
+          $('#send-to-email').text($(this).val());
+          $('#user-registration-email').text($(this).val());
+        });
+
+      }).fail(function(response) {
+        settings.callback(JSON.parse(response.responseText));
+      });
+    }
 
     _invoiceGeneratorObject.initEvents = function(){
        var self = this;
@@ -253,47 +267,47 @@
       });
     };
 
-    return _invoiceGeneratorObject;
-  }
-
-  function getAddress(token, user_id) {
-    $.ajax({
-      url : settings.host + "/api/v2/generator/recipient",
-      headers: {
-          'X-AUTH-TOKEN' : token
-      },
-      method: "POST",
-      data: {
-        user_token: user_id
-      }
-    }).done(function(response){
-      var contacts_count = response.contacts.length
-      $.each(response.contacts, function(index, value) {
-        item = $('.modal#contact-modal').find('.contact-item:first');
-        row = item.parents('.row');
-
-        item.attr('data-id', value.id);
-        item.find('.display-name').text(value.name);
-        item.find('.line1').text(value.line1);
-        item.find('.zip').text(value.zip);
-        item.find('.city').text(value.city);
-        item.find('.country').text(countryLabelLong(value.country));
-        item.find('.country_code').text(value.country);
-
-        if (contacts_count == 0) {
-          item.addClass("hidden")
+    _invoiceGeneratorObject.getAddress = function(token, user_id){
+      $.ajax({
+        url : settings.host + "/api/v2/generator/recipient",
+        headers: {
+            'X-AUTH-TOKEN' : token
+        },
+        method: "POST",
+        data: {
+          user_token: user_id
         }
-        if (contacts_count > 1) {
-          row.prepend(item);
+      }).done(function(response){
+        var contacts_count = response.contacts.length
+        $.each(response.contacts, function(index, value) {
+          item = $('.modal#contact-modal').find('.contact-item:first');
+          row = item.parents('.row');
 
-          if ((contacts_count - 1) != index) {
-            row.prepend(item.clone());
+          item.attr('data-id', value.id);
+          item.find('.display-name').text(value.name);
+          item.find('.line1').text(value.line1);
+          item.find('.zip').text(value.zip);
+          item.find('.city').text(value.city);
+          item.find('.country').text(countryLabelLong(value.country));
+          item.find('.country_code').text(value.country);
+
+          if (contacts_count == 0) {
+            item.addClass("hidden")
           }
-        }
+          if (contacts_count > 1) {
+            row.prepend(item);
+
+            if ((contacts_count - 1) != index) {
+              row.prepend(item.clone());
+            }
+          }
+        });
+      }).fail(function(response) {
+        settings.callback(response.responseJSON)
       });
-    }).fail(function(response) {
-      settings.callback(response.responseJSON)
-    });
+    };
+
+    return _invoiceGeneratorObject;
   }
 
   function setFormField(field, value) {
