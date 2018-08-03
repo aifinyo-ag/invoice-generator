@@ -1,6 +1,6 @@
 /*!
  * decimo Invoice Generator
- * version: 0.7.1
+ * version: 0.7.2
  * Requires jQuery v1.11
  * Copyright (c) 2018 Mike Nagora (mike.nagora@decimo.de)
  */
@@ -48,10 +48,6 @@
           settings.preload = false
         }
 
-        $.getScript("https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js", function() {
-          self.initEvents();  
-        });
-
         if (settings.preload) {
           $.getScript(settings.host + "/api_packs/decimo.js", function() {
             self.initGenerator(options);
@@ -77,6 +73,8 @@
         data: data
       }).done(function(response) {
         $(settings.container).html(response);
+
+        self.initEvents();
 
         // initialize forms for passed customer data
         if (options.data && options.data.form_data && !settings.user_token) {
@@ -168,6 +166,17 @@
             $('#save-modal').modal('hide');
             self.submit($(settings.form).serialize());
         });   
+
+        $('.legal-entity-fields').hide();
+        $('span.legal-person').hide();
+
+        var legal_form = 3;
+        if ($('input[id="user[legal_form]"]').val()) {
+          legal_form = $('input[id="user[legal_form]"]').val();
+        }
+
+        $('select[id="legal_form"]').val(legal_form);
+        $('select[id="legal_form"]').trigger('change');
     };
 
     _invoiceGeneratorObject.initFields = function(data){
