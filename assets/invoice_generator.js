@@ -167,6 +167,7 @@
             self.submit($(settings.form).serialize());
         });   
 
+        // set legal form of customer
         $('.legal-entity-fields').hide();
         $('span.legal-person').hide();
 
@@ -177,6 +178,13 @@
 
         $('select[id="legal_form"]').val(legal_form);
         $('select[id="legal_form"]').trigger('change');
+
+        // set table mobile mode
+        $( window ).resize(function() {
+          setMobileMode();
+        });
+
+        setMobileMode();
     };
 
     _invoiceGeneratorObject.initFields = function(data){
@@ -358,6 +366,14 @@
     } 
 
     return attribute;
+  }
+
+  function setMobileMode() {
+    if ($('.invoice').outerWidth() < 600) {
+      $(".invoice").toggleClass("mobile", true);
+    } else {
+      $(".invoice").toggleClass("mobile", false);
+    }
   }
 
   // We need that our library is globally accesible, then we save in the window
