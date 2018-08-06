@@ -72,7 +72,12 @@
         dataType: "html",
         data: data
       }).done(function(response) {
-        $(settings.container).html(response);
+        $(settings.container).html(response); 
+
+        // initialize server functions
+        if (window.reloadInvoiceGeneratorServer) {
+          window.reloadInvoiceGeneratorServer();
+        }
 
         self.initEvents();
 
@@ -369,7 +374,7 @@
   }
 
   function setMobileMode() {
-    if ($('.invoice').outerWidth() < 600) {
+    if ($('#generator').outerWidth() < 832) {
       $(".invoice").toggleClass("mobile", true);
     } else {
       $(".invoice").toggleClass("mobile", false);
