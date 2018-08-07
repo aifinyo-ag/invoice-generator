@@ -1,6 +1,6 @@
 /*!
  * decimo Invoice Generator
- * version: 0.7.4
+ * version: 0.7.5
  * Requires jQuery v1.11
  * Copyright (c) 2018 Mike Nagora (mike.nagora@decimo.de)
  */
@@ -74,11 +74,6 @@
       }).done(function(response) {
         $(settings.container).html(response); 
 
-        // initialize server functions
-        if (window.reloadInvoiceGeneratorServer) {
-          window.reloadInvoiceGeneratorServer();
-        }
-
         self.initEvents();
 
         // initialize forms for passed customer data
@@ -123,6 +118,17 @@
           $('#send-to-email').text($(this).val());
           $('#user-registration-email').text($(this).val());
         });
+
+
+        // initialize server functions
+        if (window.reloadInvoiceGeneratorServer) {
+          setTimeout(
+            function () {
+              window.reloadInvoiceGeneratorServer();
+            },
+            100
+          );
+        }
 
       }).fail(function(response) {
         settings.callback(JSON.parse(response.responseText));
