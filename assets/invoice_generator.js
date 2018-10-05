@@ -1,6 +1,6 @@
 /*!
  * decimo Invoice Generator
- * version: 0.7.5
+ * version: 0.8
  * Requires jQuery v1.11
  * Copyright (c) 2018 Mike Nagora (mike.nagora@decimo.de)
  */
@@ -22,7 +22,10 @@
       form: "",
       user_external_id: "",
       host: host_development,
-      preload: true
+      template: "standard",
+      output: "customer",
+      preload: true,
+      privacy: false
     };
 
     var sender = null;
@@ -44,8 +47,20 @@
           settings.host = host_production
         }
 
-        if (options.preload  == "false") {
-          settings.preload = false
+        if (options.hasOwnProperty("preload")) {
+          settings.preload = options.preload
+        }
+
+        if (options.hasOwnProperty("privacy")) {
+          settings.privacy = options.privacy
+        }
+
+        if (options.hasOwnProperty("template")) {
+          settings.template = options.template
+        }
+
+        if (options.hasOwnProperty("output")) {
+          settings.output = options.output
         }
 
         if (settings.preload) {
@@ -60,7 +75,18 @@
 
     _invoiceGeneratorObject.initGenerator = function(options){
       var self = this;
-      data = options.data
+
+      if (!options.hasOwnProperty("data")) {
+        data = {}
+      }
+
+      data = JSON.parse(JSON.stringify(options.data))
+
+      if (settings.privacy) {
+        data.from = {};
+        data.to = {};
+      }
+
       data["source"] = settings.source
 
       $.ajax({
@@ -77,8 +103,8 @@
         self.initEvents();
 
         // initialize forms for passed customer data
-        if (options.data && options.data.form_data && !settings.user_token) {
-          self.initFields(options.data.form_data);
+        if (options.data && !settings.user_token && settings.privacy) {
+          self.initFields(options.data);
         }
 
         // initialize recipient addresses and forms for registered customers 

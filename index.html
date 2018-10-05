@@ -130,42 +130,66 @@
               container: "generator",
               token: "",
               source: "",
+              env: "dev",
+              preload: true,
+              privacy: true,
               data: {  
-                 "user": {
-                  "token": ""
-                 },
-                 /*
-                 "from": {
-    
-                 }
-                 */
-                 form_data: {
-                  "from":{  
-                      "firstname":"Lili",
-                      "company":"",
-                      "lastname": "Lane",
-                      "email": "launetagger@dec.de",
-                      "line1":"Surallee 42",
-                      "zip":"0815",
-                      "city":"Astau",
-                      "country":"DE",
-                      "phone":"01623344567",
-                      "tax_number_natural":"",
-                      "vat_number":"",
-                      "registry_number":"",
-                      "legal_form":""
-                  },
-                  "to":{  
-                      "firstname":"Max",
-                      "lastname": "Mustermannn",
-                      "line1":"Musterweg 42",
-                      "zip":"1723",
-                      "city":"Musterlitz",
-                      "country":"DE",
-                      "phone": "01623344567",
-                      "email": "bla@bla.de"
-                  }
+                /*
+                "user": {
+                  "token": "2134123";
                 }
+                */
+                "template": "factoring",
+                "output": "customer",  
+                "from":{  
+                    "firstname": "Lili",
+                    "company": "",
+                    "lastname": "Lane",
+                    "email": "launetagger@dec.de",
+                    "line1": "Surallee 42",
+                    "zip": "0815",
+                    "city": "Astau",
+                    "country": "DE",
+                    "phone": "01623344567",
+                    "tax_number_natural": "",
+                    "vat_number": "",
+                    "registry_number": "",
+                    "legal_form": "",
+                    "bank_holder": "Mike Nagora",
+                    "bank_iban": "DE3423412341234123"
+                },
+                "to":{  
+                    "firstname":"Max",
+                    "lastname": "Mustermannn",
+                    "line1":"Musterweg 42",
+                    "zip":"1723",
+                    "city":"Musterlitz",
+                    "country":"DE",
+                    "phone": "01623344567",
+                    "email": "bla@bla.de"
+                },
+                "number": "1",
+                "delivery_from": "2018-08-25",
+                "delivery_to": "2018-09-02",
+                "target_days": "30",
+                "date": "2018-09-02",
+                "subject": "Projekt Wordpress",
+                "positions": [
+                  {
+                    "description": "Test",
+                    "amount": 10.00,
+                    "unit": "Tag",
+                    "price": 100.00,
+                    "tax_rate": 19.00
+                  },
+                  {
+                    "description": "Wordpress",
+                    "amount": 5.00,
+                    "unit": "Tag",
+                    "price": 100.00,
+                    "tax_rate": 19.00
+                  }
+                ]
               }
             }
             InvoiceGenerator.init(options, function(response) {

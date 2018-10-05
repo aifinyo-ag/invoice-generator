@@ -17,11 +17,22 @@ Eine beispielhafte Einbettung des Rechnungsgenerators findet man in der [index.h
 |--|--|--|
 |container| \<container-id\>| Im folgenden Beispiel: generator |
 |token | \<Auth Token\> | Wird von decimo bereitgestellt |
-|source| "decimo"| Bspw. Ihr Firmenname |
-|env| "prod"| Entweder "prod" oder "dev" - Standard ist "dev" |
+|source| "decimo" | Bspw. Ihr Firmenname |
+|env| "prod" | ["prod", "dev"] - Auswahl des Ziel-Environment - Standard ist "dev" |
+|preload| true | Vorladen der decimo.js (ohne extra Einbindung der decimo.js auf der Website) - Standard ist: true |
+|privacy| false | Übertragung personenbezogener Daten (from, to) an decimo Server - Standard ist: false |
 |data.user.token| \<decimo User ID Token\>| Gültiger decimo User ID Token zur Vorinitialisierung des Formulars. Der Wert wird nach Speicherung des Kunden auf Seiten decimos im Request zurückgegeben. |
-|data.form_data| {from: {Kundenattribute}, to: {Kundenattribute}}| Initialisierung des Formular nach dem Laden des Generators - Daten werden nicht an decimo übergeben|
-|data.from, data.to| {Kundenattribute}| Initialisierung des Formular vor dem Laden des Generators - Daten werden an decimo übergeben|
+|data.template| "factoring" | ["factoring", "standard"] - PDF wird als "Factoring" oder "Standard" Rechnung generiert. - Standard ist "standard" | 
+|data.output| "customer" | ["callback", "customer"] - PDF Email wird an eine Callback URL oder an die E-Mail Adresse des Kunden versendet. - Standard ist "customer" | 
+|data.from| {Kundenattribute}| Initialisierung des Rechnungsempfängers|
+|data.to| {Kundenattribute}| Initialisierung des Rechnungsstellers|
+|data.number| "1" | Rechnungsnummer|
+|data.delivery_from| "2018-08-25" | Startdatum des Leistungszeitraums |
+|data.delivery_to| "2018-09-02" | Enddatum des Leistungszeitraums |
+|data.target_days| "30" | ["7", "14", "30", "45", "60", "90"] - Zahlungsziel |
+|data.days| "2018-09-02" | Rechnungsdatum |
+|data.subject| "Projekt" | Projekt |
+|data.positions| [{Position}] | Array von Rechnungspositionen |
 
 **Kundenattribute**
 
@@ -42,6 +53,16 @@ Eine beispielhafte Einbettung des Rechnungsgenerators findet man in der [index.h
 |registry_number| *Registernummer*
 |legal_form| 2: *Freelancer*; 3: *Einzelunternehmen/Selbstständig*; 11: *OG / KG / GbR*; 21: *GmbH*; 22: *UG*; 23: *AG*; 31: *Eingetragener Verein*; 41: *Öffentliches Recht* 
 
+**Position**
+
+|Name| Wert |
+|--|--|
+|description| "Test"
+|amount| 10.00
+|unit| "Tag" aus ["Tag", "Stunde", "Kilometer", "Stück", "Pauschale", "Anzahl"]
+|price| 100.00
+|tax_rate| 19.00 aus [0, 7.00, 19.00]
+
 
 In einem Beispiel sieht eine Konfiguration wie folgt aus:
 ```
@@ -56,37 +77,66 @@ In einem Beispiel sieht eine Konfiguration wie folgt aus:
       container: "generator",
       token: "",
       source: "",
-      data: {  
-         "user": {
+      env: "dev",
+      preload: true,
+      privacy: true,
+      data: {
+        /*  
+        "user": {
           "token": ""
-         },
-         form_data: {
-          "from":{  
-              "firstname":"Lili",
-              "company":"",
-              "lastname": "Lane",
-              "email": "launetagger@dec.de",
-              "line1":"Surallee 42",
-              "zip":"0815",
-              "city":"Astau",
-              "country":"DE",
-              "phone":"01623344567",
-              "tax_number_natural":"",
-              "vat_number":"",
-              "registry_number":"",
-              "legal_form":""
+        },
+        */
+        "template": "factoring",
+        "output": "customer",  
+        "from":{  
+            "firstname": "Lili",
+            "company": "",
+            "lastname": "Lane",
+            "email": "launetagger@dec.de",
+            "line1": "Surallee 42",
+            "zip": "0815",
+            "city": "Astau",
+            "country": "DE",
+            "phone": "01623344567",
+            "tax_number_natural": "",
+            "vat_number": "",
+            "registry_number": "",
+            "legal_form": "",
+            "bank_holder": "Max Mustermann",
+            "bank_iban": "DE3423412341234123"
+        },
+        "to":{  
+            "firstname":"Max",
+            "lastname": "Mustermannn",
+            "line1":"Musterweg 42",
+            "zip":"1723",
+            "city":"Musterlitz",
+            "country":"DE",
+            "phone": "01623344567",
+            "email": "bla@bla.de"
+        },
+        "number": "1",
+        "delivery_from": "2018-08-25",
+        "delivery_to": "2018-09-02",
+        "target_days": "30",
+        "date": "2018-09-02",
+        "subject": "Projekt Wordpress",
+        "positions": [
+          {
+            "description": "Test",
+            "amount": 10.00,
+            "unit": "Tag",
+            "price": 100.00,
+            "tax_rate": 19.00
           },
-          "to":{  
-              "firstname":"Max",
-              "lastname": "Mustermannn",
-              "line1":"Musterweg 42",
-              "zip":"1723",
-              "city":"Musterlitz",
-              "country":"DE",
-              "phone": "01623344567",
-              "email": "bla@bla.de"
+          {
+            "description": "Wordpress",
+            "amount": 5.00,
+            "unit": "Tag",
+            "price": 100.00,
+            "tax_rate": 19.00
           }
-        }
+        ]
       }
     }
     InvoiceGenerator.init(options, function(response) {
