@@ -52,6 +52,7 @@ Eine beispielhafte Einbettung des Rechnungsgenerators findet man in der [index.h
 |vat_number| *USt-IdNr*
 |registry_number| *Registernummer*
 |legal_form| 2: *Freelancer*; 3: *Einzelunternehmen/Selbstständig*; 11: *OG / KG / GbR*; 21: *GmbH*; 22: *UG*; 23: *AG*; 31: *Eingetragener Verein*; 41: *Öffentliches Recht* 
+|date_of_birth| 01.11.2018
 
 **Position**
 
