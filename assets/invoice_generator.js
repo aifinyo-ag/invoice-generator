@@ -1,6 +1,6 @@
 /*!
  * decimo Invoice Generator
- * version: 0.8
+ * version: 0.8.1
  * Requires jQuery v1.11
  * Copyright (c) 2018 Mike Nagora (mike.nagora@decimo.de)
  */
@@ -204,18 +204,6 @@
             self.submit($(settings.form).serialize());
         });   
 
-        // set legal form of customer
-        $('.legal-entity-fields').hide();
-        $('span.legal-person').hide();
-
-        var legal_form = 3;
-        if ($('input[id="user[legal_form]"]').val()) {
-          legal_form = $('input[id="user[legal_form]"]').val();
-        }
-
-        $('select[id="legal_form"]').val(legal_form);
-        $('select[id="legal_form"]').trigger('change');
-
         // set table mobile mode
         $( window ).resize(function() {
           setMobileMode();
@@ -247,6 +235,7 @@
           $('input[id="user[tax_number_natural]"]').val(data.from.tax_number_natural);
           $('input[id="user[registry_number]"]').val(data.from.registry_number);
           $('input[id="user[legal_form]"]').val(data.from.legal_form);
+          $('input[id="user[date_of_birth]"]').val(data.from.date_of_birth);
 
           $('#send-to-email').text(setBlankForUndefined(data.from.email));
           $('#user-registration-email').text(setBlankForUndefined(data.from.email));
@@ -272,7 +261,6 @@
           setFormField($('input[name="sender[tax_number_natural]"]'), data.from.tax_number_natural);
           setFormField($('input[name="sender[tax_number_legal]"]'), data.from.tax_number_legal);
           setFormField($('input[name="sender[registry_number]"]'), data.from.registry_number);
-          setFormField($('input[name="legal_form"]'), data.from.legal_form);
           setFormField($('input[name="sender[email]"]'), data.from.email);
           setFormField($('input[name="sender[phone]"]'), data.from.phone);
           setFormField($('input[name="sender[date_of_birth]"]'), data.from.date_of_birth);
