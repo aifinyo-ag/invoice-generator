@@ -1,8 +1,8 @@
 /*!
  * decimo Invoice Generator
- * version: 0.8.1
+ * version: 0.8.2
  * Requires jQuery v1.11
- * Copyright (c) 2018 Mike Nagora (mike.nagora@decimo.de)
+ * Copyright (c) 2019 Mike Nagora (mike.nagora@rechnung.de)
  */
 
 (function(window){
@@ -144,7 +144,6 @@
           $('#send-to-email').text($(this).val());
           $('#user-registration-email').text($(this).val());
         });
-
 
         // initialize server functions
         if (window.reloadInvoiceGeneratorServer) {
@@ -361,8 +360,13 @@
   }
 
   function setFullAddress(object, data) {
+    let name = setBlankForUndefined(data.firstname) + ' ' + setBlankForUndefined(data.lastname)
+    if (data.company !== "undefined" &&  data.company !== "") {
+      name = setBlankForUndefined(data.company)
+    }
+
     object.find('.data-full-address').html(
-      '<p>' + setBlankForUndefined(data.firstname) + ' ' + setBlankForUndefined(data.lastname) + 
+      '<p>' + name + 
       '<br>' + setBlankForUndefined(data.line1) + 
       '<br>' + setBlankForUndefined(data.zip) + ' ' + setBlankForUndefined(data.city) + 
       '<br>' + countryLabelLong(setBlankForUndefined(data.country)) + '</p>'
