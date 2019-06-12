@@ -1,6 +1,6 @@
 /*!
  * decimo Invoice Generator
- * version: 0.8.2
+ * version: 0.8.3
  * Requires jQuery v1.11
  * Copyright (c) 2019 Mike Nagora (mike.nagora@rechnung.de)
  */
@@ -267,7 +267,7 @@
 
         // initialize recipient address
         if (data.to) {
-          $('input[id="recipient[name]"]').val(data.to.firstname + " " + data.to.lastname);
+          $('input[id="recipient[name]"]').val(getName(data.to));
           $('input[id="recipient[email]"]').val(data.to.email);
           $('input[id="recipient[line1]"]').val(data.to.line1);
           $('input[id="recipient[zip]"]').val(data.to.zip);
@@ -359,11 +359,17 @@
     }
   }
 
-  function setFullAddress(object, data) {
+  function getName(data) {
     let name = setBlankForUndefined(data.firstname) + ' ' + setBlankForUndefined(data.lastname)
-    if (data.company !== "undefined" &&  data.company !== "") {
+    if (data.company !== "undefined" &&  data.company !== "" && data.company !== undefined) {
       name = setBlankForUndefined(data.company)
     }
+
+    return name
+  }
+
+  function setFullAddress(object, data) {
+    let name = getName(data);
 
     object.find('.data-full-address').html(
       '<p>' + name + 
