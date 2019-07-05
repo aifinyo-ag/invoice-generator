@@ -1,6 +1,6 @@
 /*!
  * decimo Invoice Generator
- * version: 0.8.3
+ * version: 0.8.4
  * Requires jQuery v1.11
  * Copyright (c) 2019 Mike Nagora (mike.nagora@rechnung.de)
  */
@@ -225,6 +225,7 @@
           $('input[id="user[company]"]').val(data.from.company);
           $('input[id="user[email]"]').val(data.from.email);
           $('input[id="user[line1]"]').val(data.from.line1);
+          $('input[id="user[line2]"]').val(data.from.line2);
           $('input[id="user[zip]"]').val(data.from.zip);
           $('input[id="user[city]"]').val(data.from.city);
           $('input[id="user[country]"]').val(data.from.country);
@@ -252,6 +253,7 @@
           setFormField($('input[name="sender[company]"]'), data.from.company);
           setFormField($('input[name="sender[email]"]'), data.from.email);
           setFormField($('input[name="sender[line1]"]'), data.from.line1);
+          setFormField($('input[name="sender[line2]"]'), data.from.line2);
           setFormField($('input[name="sender[zip]"]'), data.from.zip);
           setFormField($('input[name="sender[city]"]'), data.from.city);
           setFormField($('input[name="sender[country]"]'), data.from.country);
@@ -270,6 +272,7 @@
           $('input[id="recipient[name]"]').val(getName(data.to));
           $('input[id="recipient[email]"]').val(data.to.email);
           $('input[id="recipient[line1]"]').val(data.to.line1);
+          $('input[id="recipient[line2]"]').val(data.to.line2);
           $('input[id="recipient[zip]"]').val(data.to.zip);
           $('input[id="recipient[city]"]').val(data.to.city);
           $('input[id="recipient[country]"]').val(data.to.country);
@@ -370,13 +373,19 @@
 
   function setFullAddress(object, data) {
     let name = getName(data);
+    let output = "";
 
-    object.find('.data-full-address').html(
-      '<p>' + name + 
-      '<br>' + setBlankForUndefined(data.line1) + 
-      '<br>' + setBlankForUndefined(data.zip) + ' ' + setBlankForUndefined(data.city) + 
-      '<br>' + countryLabelLong(setBlankForUndefined(data.country)) + '</p>'
-    );
+    output = '<p>' + name;
+    output += '<br>' + setBlankForUndefined(data.line1);
+    
+    if (data.line2) {
+      output += '<br>' + setBlankForUndefined(data.line2);
+    }
+
+    output += '<br>' + setBlankForUndefined(data.zip) + ' ' + setBlankForUndefined(data.city);
+    output += '<br>' + countryLabelLong(setBlankForUndefined(data.country)) + '</p>';
+      
+    object.find('.data-full-address').html(output);
   }
 
   function setContactInfo(object, data) {
