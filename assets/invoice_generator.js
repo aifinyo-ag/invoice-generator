@@ -1,6 +1,6 @@
 /*!
  * decimo Invoice Generator
- * version: 0.8.4
+ * version: 0.8.5
  * Requires jQuery v1.11
  * Copyright (c) 2019 Mike Nagora (mike.nagora@rechnung.de)
  */
@@ -25,7 +25,8 @@
       template: "standard",
       output: "customer",
       preload: true,
-      privacy: false
+      privacy: false,
+      business: "general"
     };
 
     var sender = null;
@@ -61,6 +62,10 @@
 
         if (options.hasOwnProperty("output")) {
           settings.output = options.output
+        }
+
+        if (options.hasOwnProperty("business")) {
+          settings.business = options.business
         }
 
         if (settings.preload) {
@@ -128,7 +133,8 @@
               "vat_number": $('input[id="user[vat_number]"]').val(),
               "registry_number": $('input[id="user[registry_number]"]').val(),
               "legal_form": $('input[id="user[legal_form]"]').val(),
-              "date_of_birth": $('input[id="user[date_of_birth]"]').val()
+              "date_of_birth": $('input[id="user[date_of_birth]"]').val(),
+              "customer_no": $('input[id="user[customer_no]"]').val()
             }
           }
 
@@ -236,6 +242,7 @@
           $('input[id="user[registry_number]"]').val(data.from.registry_number);
           $('input[id="user[legal_form]"]').val(data.from.legal_form);
           $('input[id="user[date_of_birth]"]').val(data.from.date_of_birth);
+          $('input[id="user[customer_no]"]').val(data.from.customer_no);
 
           $('#send-to-email').text(setBlankForUndefined(data.from.email));
           $('#user-registration-email').text(setBlankForUndefined(data.from.email));
