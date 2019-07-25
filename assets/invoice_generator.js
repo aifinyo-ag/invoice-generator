@@ -1,6 +1,6 @@
 /*!
  * decimo Invoice Generator
- * version: 0.8.5
+ * version: 0.8.6
  * Requires jQuery v1.11
  * Copyright (c) 2019 Mike Nagora (mike.nagora@rechnung.de)
  */
@@ -253,6 +253,26 @@
           sender.find('.data-vat-number').text(setBlankForUndefined(data.from.vat_number));
           sender.find('.data-tax-number').text(setBlankForUndefined(data.from.tax_number));
           sender.find('.data-registry-number').text(setBlankForUndefined(data.from.registry_number));
+
+          if (data.from.registry_number) {
+            sender.find('.data-registry-number').closest('div').removeClass('hidden');
+          }
+
+          if (data.from.tax_number) {
+            sender.find('.data-tax-number').closest('div').removeClass('hidden');      
+          }
+
+          if (data.from.vat_number) {
+            sender.find('.data-vat-number').closest('div').removeClass('hidden');
+          }
+
+          if (data.from.bank_holder) {
+            $('input[name="user[bank_holder]"]').val(data.from.bank_holder)
+          }
+
+          if (data.from.bank_iban) {
+            $('input[name="user[bank_iban]"]').val(data.from.bank_iban)   
+          }       
 
           //set data in modal
           setFormField($('input[name="sender[first_name]"]'), data.from.firstname);
