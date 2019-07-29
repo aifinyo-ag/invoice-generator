@@ -1,6 +1,6 @@
 /*!
  * decimo Invoice Generator
- * version: 0.8.6
+ * version: 0.8.7
  * Requires jQuery v1.11
  * Copyright (c) 2019 Mike Nagora (mike.nagora@rechnung.de)
  */
@@ -8,7 +8,7 @@
 (function(window){
   var host_production = "https://my.decimo.de";
   var host_development = "https://development.decimo.de";
-
+  
   // This function will contain all our code
   function InvoiceGenerator(){
     var _invoiceGeneratorObject = {};
@@ -251,15 +251,20 @@
           setContactInfo(sender, data.from);
 
           sender.find('.data-vat-number').text(setBlankForUndefined(data.from.vat_number));
-          sender.find('.data-tax-number').text(setBlankForUndefined(data.from.tax_number));
+          sender.find('.data-tax-number-legal').text(setBlankForUndefined(data.from.tax_number_legal));
+          sender.find('.data-tax-number-natural').text(setBlankForUndefined(data.from.tax_number_natural));
           sender.find('.data-registry-number').text(setBlankForUndefined(data.from.registry_number));
 
           if (data.from.registry_number) {
             sender.find('.data-registry-number').closest('div').removeClass('hidden');
           }
 
-          if (data.from.tax_number) {
-            sender.find('.data-tax-number').closest('div').removeClass('hidden');      
+          if (data.from.tax_number_legal) {
+            sender.find('.data-tax-number-legal').closest('div').removeClass('hidden');      
+          }
+
+          if (data.from.tax_number_natural) {
+            sender.find('.data-tax-number-natural').closest('div').removeClass('hidden');      
           }
 
           if (data.from.vat_number) {
